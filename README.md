@@ -1,6 +1,6 @@
 #DatetimepickerBundle
 
-This bundle implements the [Bootstrap DateTime Picker](https://github.com/smalot/bootstrap-datetimepicker) in a Form Type for Symfony 2.*. The bundle structure is inspired by GenemuFormBundle.
+This bundle implements the [Bootstrap DateTime Picker](https://github.com/smalot/bootstrap-datetimepicker) in a Form Type for Symfony 3.* and ^4.0. The bundle structure is inspired by GenemuFormBundle.
 
 Demo : http://www.malot.fr/bootstrap-datetimepicker/demo.php
 
@@ -16,7 +16,7 @@ Add the following dependency to your composer.json file:
 {
     "require": {
 
-        "stephanecollot/datetimepicker-bundle": "dev-master"
+        "alexvasilyev/datetimepicker-bundle": "dev-master"
     }
 }
 ```
@@ -29,6 +29,7 @@ php composer.phar update stephanecollot/datetimepicker-bundle
 
 ### Step 2: Enable the bundle
 
+Symfony 3
 ``` php
 <?php
 // app/AppKernel.php
@@ -42,16 +43,39 @@ public function registerBundles()
 }
 ```
 
+Symfony 4
+``` php
+<?php
+// config/bundles.php
+return [
+        // ...
+        SC\DatetimepickerBundle\SCDatetimepickerBundle::class => ['all' => true],
+];
+```
+
+Symfony 3
 ``` yml
 # app/config/config.yml
 sc_datetimepicker:
     picker: ~
 ```
 
-### Step 3: Initialize assets
+Symfony 4
+``` yml
+# config/packages/sc_datetimepicker.yaml
+sc_datetimepicker:
+    picker: ~
+```
 
+### Step 3: Initialize assets
+Symfony 3
 ``` bash
 $ php app/console assets:install web/
+```
+
+Symfony 4
+``` bash
+$ php app/console assets:install public/
 ```
 
 ## Usages
