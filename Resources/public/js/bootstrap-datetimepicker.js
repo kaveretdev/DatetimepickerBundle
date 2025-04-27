@@ -1340,6 +1340,9 @@
 			if (/^\d{4}\-\d{1,2}\-\d{1,2}[T ]\d{1,2}\:\d{1,2}\:\d{1,2}[Z]{0,1}$/.test(date)) {
 				format = this.parseFormat('yyyy-mm-dd hh:ii:ss', type);
 			}
+			if (/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4} - ([01][0-9]|2[0-3]):([0-5][0-9])$/.test(date)) {
+				format = this.parseFormat('dd/mm/yyyy - hh:ii', type);
+			}
 			if (/^[-+]\d+[dmwy]([\s,]+[-+]\d+[dmwy])*$/.test(date)) {
 				var part_re = /([-+]\d+)([dmwy])/,
 					parts = date.match(/([-+]\d+)([dmwy])/g),
