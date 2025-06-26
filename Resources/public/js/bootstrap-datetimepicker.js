@@ -224,7 +224,8 @@
 					[this.element, {
 						focus:   $.proxy(this.show, this),
 						keyup:   $.proxy(this.update, this),
-						keydown: $.proxy(this.keydown, this)
+						keydown: $.proxy(this.keydown, this),
+						blur:    $.proxy(this.validateOnBlur, this),
 					}]
 				];
 			}
@@ -468,6 +469,8 @@
 				date = new Date();
 				fromArgs = false;
 			}
+
+			if (!this.invalid(date)) return;
 
 			this.date = DPGlobal.parseDate(date, this.format, this.language, this.formatType);
 
@@ -1191,6 +1194,33 @@
 			}
 		},
 
+		validateOnBlur: function () {
+			const date = this.element.data('date') || (this.isInput ? this.element.val() : this.element.find('input').val()) || this.initialDate;
+
+			if (this.invalid(date)) return;
+
+			if (this.element.data('show-invalid-message') ?? true) {
+				const invalidMessage = this.element.data('invalid-message')?.replace('%s', date);
+				alert(invalidMessage ?? `Invalid date format: ${date}`);
+			}
+
+			this.fill();
+			this.setValue();
+		},
+
+		invalid: function (d) {
+			if (/^\d{4}\-\d{1,2}\-\d{1,2}$/.test(d))
+				return true;
+			if (/^\d{4}\-\d{1,2}\-\d{1,2}[T ]\d{1,2}\:\d{1,2}$/.test(d))
+				return true;
+			if (/^\d{4}\-\d{1,2}\-\d{1,2}[T ]\d{1,2}\:\d{1,2}\:\d{1,2}[Z]{0,1}$/.test(d))
+				return true;
+			if (/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4} - ([01][0-9]|2[0-3]):([0-5][0-9])$/.test(d))
+				return true;
+
+			return d instanceof Date && !isNaN(d);
+		},
+
 		showMode: function (dir) {
 			if (dir) {
 				var newViewMode = Math.max(0, Math.min(DPGlobal.modes.length - 1, this.viewMode + dir));
@@ -1339,6 +1369,9 @@
 			}
 			if (/^\d{4}\-\d{1,2}\-\d{1,2}[T ]\d{1,2}\:\d{1,2}\:\d{1,2}[Z]{0,1}$/.test(date)) {
 				format = this.parseFormat('yyyy-mm-dd hh:ii:ss', type);
+			}
+			if (/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4} - ([01][0-9]|2[0-3]):([0-5][0-9])$/.test(date)) {
+				format = this.parseFormat('dd/mm/yyyy - hh:ii', type);
 			}
 			if (/^[-+]\d+[dmwy]([\s,]+[-+]\d+[dmwy])*$/.test(date)) {
 				var part_re = /([-+]\d+)([dmwy])/,
